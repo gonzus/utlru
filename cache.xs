@@ -20,10 +20,13 @@ PROTOTYPES: DISABLE
 #################################################################
 
 Cache*
-new(char* CLASS, HV* opt = NULL)
+new(char* CLASS, int size = 0)
 CODE:
 {
-    Cache* cache = cache_build(1000);
+    if (size <= 0) {
+        size = 1000;
+    }
+    Cache* cache = cache_build(size);
     RETVAL = cache;
 }
 OUTPUT: RETVAL
