@@ -1,0 +1,12 @@
+META.yml
+
+blib/
+
+/Makefile
+*.sw[po]
+*.bak
+blib/
+*.o
+*.bs
+*.swp
+*.tar.gz
