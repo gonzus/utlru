@@ -8,13 +8,11 @@ version 0.001
 
 # SYNOPSIS
 
-# DESCRIPTION
-
-Cache::utLRU - LRU cache using the uthash library
+Quick & dirty implementation of an LRU cache using the uthash library.
 
 # THANKS
 
-- The `uthash` team at [XXX](XXX)
+- The `uthash` team at [http://troydhanson.github.com/uthash/](http://troydhanson.github.com/uthash/)
 
 # AUTHORS
 

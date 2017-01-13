@@ -17,6 +17,20 @@ __END__
 
 =head1 SYNOPSIS
 
+Cache::utLRU - LRU cache using the uthash library
+
 =head1 DESCRIPTION
 
+Quick & dirty implementation of an LRU cache using the uthash library.
+
+=head1 AUTHORS
+
+=over 4
+
+=item * Gonzalo Diethelm C<< gonzus AT cpan DOT org >>
+
 =back
+
+=head1 THANKS
+
+The C<uthash> team at L<http://troydhanson.github.com/uthash>.

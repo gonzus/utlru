@@ -17,7 +17,7 @@ WriteMakefile(
     AUTHOR         => [
         'Gonzalo Diethelm (gonzus@cpan.org)',
     ],
-    DEFINE         => '-DGMEM_CHECK',
+    # DEFINE         => '-DGMEM_CHECK',
     INC            => '-I.',
     OBJECT         => '$(O_FILES)',
     test => {
