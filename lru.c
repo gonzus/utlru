@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <string.h>
+#include "gmem.h"
 #include "lru.h"
 
 Cache* cache_build(int size)
 {
-    Cache* cache = (Cache*) malloc(sizeof(Cache));
+    Cache* cache;
+    GMEM_NEW(cache, Cache*, sizeof(Cache));
     cache->size = size;
     cache->data = 0;
     /* fprintf(stderr, "LOG building cache for %d elements\n", cache->size); */
@@ -14,7 +16,7 @@ Cache* cache_build(int size)
 void cache_destroy(Cache* cache)
 {
     /* fprintf(stderr, "LOG destroying cache for %d elements\n", cache->size); */
-    free(cache);
+    GMEM_DEL(cache, Cache*, sizeof(Cache));
 }
 
 const CacheVal cache_find(Cache* cache, const CacheKey key)
@@ -38,6 +40,8 @@ const CacheVal cache_find(Cache* cache, const CacheKey key)
 
 void cache_add(Cache* cache, const CacheKey key, const CacheVal val)
 {
+    /* do not use gmem for these elements,
+     * they will be deleted internally by ut */
     CacheEntry* entry = (CacheEntry*) malloc(sizeof(CacheEntry));
     entry->key = strdup(key);
     entry->val = strdup(val);
@@ -58,8 +62,8 @@ void cache_add(Cache* cache, const CacheKey key, const CacheVal val)
              */
             /* fprintf(stderr, "LOG removing key [%s]\n", entry->key); */
             HASH_DELETE(hh, cache->data, entry);
-            free((void*) entry->key);
-            free((void*) entry->val);
+            free((char*) entry->key);
+            free((char*) entry->val);
             free(entry);
             break;
         }

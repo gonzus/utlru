@@ -2,6 +2,8 @@ cache.xs
 uthash.h
 lru.h
 lru.c
+gmem.c
+gmem.h
 Changes
 lib/Cache/utLRU.pm
 LICENSE
@@ -10,6 +12,8 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 ppport.h
 README.md
+.gitignore
 typemap
 t/01_use.t
 t/02_basic.t
+t/03_multi.t
