@@ -10,3 +10,7 @@ blib/
 *.bs
 *.swp
 *.tar.gz
+MYMETA.json
+MYMETA.yml
+cache.c
+pm_to_blib
