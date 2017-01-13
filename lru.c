@@ -69,3 +69,12 @@ void cache_add(Cache* cache, const CacheKey key, const CacheVal val)
         }
     }
 }
+
+void cache_iterate(Cache* cache, CacheVisitor visitor, void* arg)
+{
+    CacheEntry* entry = 0;
+    CacheEntry* tmp = 0;
+    HASH_ITER(hh, cache->data, entry, tmp) {
+        visitor(cache, entry, arg);
+    }
+}

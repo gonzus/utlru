@@ -23,4 +23,7 @@ void cache_destroy(Cache* cache);
 const CacheVal cache_find(Cache* cache, const CacheKey key);
 void cache_add(Cache* cache, const CacheKey key, const CacheVal val);
 
+typedef void (CacheVisitor)(Cache* cache, CacheEntry* entry, void* arg);
+void cache_iterate(Cache* cache, CacheVisitor visitor, void* arg);
+
 #endif

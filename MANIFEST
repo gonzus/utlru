@@ -17,3 +17,4 @@ typemap
 t/01_use.t
 t/02_basic.t
 t/03_multi.t
+t/04_visit.t

@@ -12,6 +12,36 @@ static int cache_dtor(pTHX_ SV *sv, MAGIC *mg) {
     return 0;
 }
 
+static void cache_visit(Cache* cache, CacheEntry* entry, void* arg)
+{
+    dTHX;
+    dSP;
+    if (!arg) {
+        return;
+    }
+    ENTER;
+    SAVETMPS;
+
+    const char* key = (const char*) entry->key;
+    int klen = key ? strlen(key) : 0;
+    const char* val = (const char*) entry->val;
+    int vlen = val ? strlen(val) : 0;
+
+    PUSHMARK(SP);
+    mXPUSHp(key, klen);
+    mXPUSHp(val, vlen);
+    PUTBACK;
+
+    SV* cb = (SV*) arg;
+    call_sv(cb, G_SCALAR | G_EVAL);
+
+    SPAGAIN;
+
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+}
+
 static MGVTBL session_magic_vtbl = { .svt_free = cache_dtor };
 
 MODULE = Cache::utLRU        PACKAGE = Cache::utLRU
@@ -45,3 +75,10 @@ CODE:
     RETVAL = cache_find(cache, (CacheKey) key);
 }
 OUTPUT: RETVAL
+
+void
+visit(Cache* cache, SV* cb)
+CODE:
+{
+    cache_iterate(cache, cache_visit, cb);
+}
