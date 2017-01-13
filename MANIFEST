@@ -14,6 +14,7 @@ ppport.h
 README.md
 .gitignore
 typemap
+perf/hash_vs_cache.pl
 t/01_use.t
 t/02_basic.t
 t/03_multi.t
