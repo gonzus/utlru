@@ -18,6 +18,17 @@ void cache_destroy(pTHX_ Cache* cache)
     GMEM_DEL(cache, Cache*, sizeof(Cache));
 }
 
+int cache_size(pTHX_ Cache* cache)
+{
+    return HASH_COUNT(cache->data);
+}
+
+void cache_clear(pTHX_ Cache* cache)
+{
+    /* fprintf(stderr, "LOG clearing cache for %d elements\n", cache->size); */
+    HASH_CLEAR(hh, cache->data);
+}
+
 SV* cache_find(pTHX_ Cache* cache, SV* key)
 {
     STRLEN klen = 0;

@@ -58,6 +58,21 @@ CODE:
 }
 OUTPUT: RETVAL
 
+int
+size(Cache* cache)
+CODE:
+{
+    RETVAL = cache_size(aTHX_ cache);
+}
+OUTPUT: RETVAL
+
+void
+clear(Cache* cache)
+CODE:
+{
+    cache_clear(aTHX_ cache);
+}
+
 void
 add(Cache* cache, SV* key, SV* val)
 CODE:
