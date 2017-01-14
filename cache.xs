@@ -6,6 +6,8 @@
 
 #include "lru.h"
 
+#define CACHE_DEFAULT_SIZE 1000
+
 static int cache_dtor(pTHX_ SV *sv, MAGIC *mg) {
     Cache* cache = (Cache*) mg->mg_ptr;
     cache_destroy(cache);
@@ -14,6 +16,7 @@ static int cache_dtor(pTHX_ SV *sv, MAGIC *mg) {
 
 static void cache_visit(Cache* cache, CacheEntry* entry, void* arg)
 {
+    /* TODO: find out if we really need to call all these magic macros */
     dTHX;
     dSP;
     if (!arg) {
@@ -22,14 +25,9 @@ static void cache_visit(Cache* cache, CacheEntry* entry, void* arg)
     ENTER;
     SAVETMPS;
 
-    const char* key = (const char*) entry->key;
-    int klen = key ? strlen(key) : 0;
-    const char* val = (const char*) entry->val;
-    int vlen = val ? strlen(val) : 0;
-
     PUSHMARK(SP);
-    mXPUSHp(key, klen);
-    mXPUSHp(val, vlen);
+    PUSHs(entry->key);
+    PUSHs(entry->val);
     PUTBACK;
 
     SV* cb = (SV*) arg;
@@ -54,25 +52,33 @@ new(char* CLASS, int size = 0)
 CODE:
 {
     if (size <= 0) {
-        size = 1000;
+        size = CACHE_DEFAULT_SIZE;
     }
-    Cache* cache = cache_build(size);
-    RETVAL = cache;
+    RETVAL = cache_build(size);
 }
 OUTPUT: RETVAL
 
 void
-add(Cache* cache, const char* key, const char* val)
+add(Cache* cache, SV* key, SV* val)
 CODE:
 {
-    cache_add(cache, (CacheKey) key, (CacheVal) val);
+    if (!key || !SvOK(key) || !SvPOK(key)) {
+        croak("add key argument must be a string");
+    }
+    if (!val || !SvOK(val) || !SvPOK(val)) {
+        croak("add value argument must be a string");
+    }
+    cache_add(aTHX_ cache, key, val);
 }
 
-const char*
-find(Cache* cache, const char* key)
+SV*
+find(Cache* cache, SV* key)
 CODE:
 {
-    RETVAL = cache_find(cache, (CacheKey) key);
+    if (!key || !SvOK(key) || !SvPOK(key)) {
+        croak("find key argument must be a string");
+    }
+    RETVAL = cache_find(aTHX_ cache, key);
 }
 OUTPUT: RETVAL
 
@@ -80,5 +86,8 @@ void
 visit(Cache* cache, SV* cb)
 CODE:
 {
-    cache_iterate(cache, cache_visit, cb);
+    if (!cb || !SvOK(cb) || !SvROK(cb) || SvTYPE(SvRV(cb)) != SVt_PVCV) {
+        croak("visit cb argument must be a coderef");
+    }
+    cache_iterate(aTHX_ cache, cache_visit, cb);
 }

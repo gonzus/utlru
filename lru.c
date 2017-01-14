@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 #include "gmem.h"
 #include "lru.h"
 
@@ -19,33 +18,45 @@ void cache_destroy(Cache* cache)
     GMEM_DEL(cache, Cache*, sizeof(Cache));
 }
 
-const CacheVal cache_find(Cache* cache, const CacheKey key)
+SV* cache_find(pTHX_ Cache* cache, SV* key)
 {
+    STRLEN klen = 0;
+    char* kptr = 0;
+    kptr = SvPV(key, klen);
+
     CacheEntry* entry;
-    HASH_FIND_STR(cache->data, key, entry);
+    HASH_FIND(hh, cache->data, kptr, klen, entry);
     if (!entry) {
         /* fprintf(stderr, "LOG could not find key [%s] in cache\n", key); */
         return NULL;
     }
 
     /*
-     * remove it (so the subsequent add
-     * will throw it on the front of the list)
+     * remove it; the subsequent add will throw it on the front of the list
      */
     /* fprintf(stderr, "LOG found key [%s] in cache\n", key); */
     HASH_DELETE(hh, cache->data, entry);
-    HASH_ADD_KEYPTR(hh, cache->data, entry->key, strlen(entry->key), entry);
+    HASH_ADD_KEYPTR(hh, cache->data, kptr, klen, entry);
     return entry->val;
 }
 
-void cache_add(Cache* cache, const CacheKey key, const CacheVal val)
+void cache_add(pTHX_ Cache* cache, SV* key, SV* val)
 {
     /* do not use gmem for these elements,
      * they will be deleted internally by ut */
+    STRLEN klen = 0;
+    char* kptr = 0;
+    kptr = SvPV(key, klen);
+
     CacheEntry* entry = (CacheEntry*) malloc(sizeof(CacheEntry));
-    entry->key = strdup(key);
-    entry->val = strdup(val);
-    HASH_ADD_KEYPTR(hh, cache->data, entry->key, strlen(entry->key), entry);
+    entry->key = key;
+    entry->val = val;
+
+    /* increment perl refcounts */
+    SvREFCNT_inc(key);
+    SvREFCNT_inc(val);
+
+    HASH_ADD_KEYPTR(hh, cache->data, kptr, klen, entry);
     /* fprintf(stderr, "LOG added key [%s] => [%s]\n", key, val); */
 
     /*
@@ -56,21 +67,23 @@ void cache_add(Cache* cache, const CacheKey key, const CacheVal val)
         CacheEntry* tmp;
         HASH_ITER(hh, cache->data, entry, tmp) {
             /*
-             * prune the first entry
-             * (loop is based on insertion order
-             * so this deletes the oldest item)
+             * prune the first entry; loop is based on insertion
+             * order so this deletes the oldest item
              */
             /* fprintf(stderr, "LOG removing key [%s]\n", entry->key); */
+
+            /* decrement perl refcounts */
+            SvREFCNT_dec(entry->key);
+            SvREFCNT_dec(entry->val);
+
             HASH_DELETE(hh, cache->data, entry);
-            free((char*) entry->key);
-            free((char*) entry->val);
             free(entry);
             break;
         }
     }
 }
 
-void cache_iterate(Cache* cache, CacheVisitor visitor, void* arg)
+void cache_iterate(pTHX_ Cache* cache, CacheVisitor visitor, void* arg)
 {
     CacheEntry* entry = 0;
     CacheEntry* tmp = 0;
