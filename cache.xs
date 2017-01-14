@@ -80,8 +80,8 @@ CODE:
     if (!key || !SvOK(key) || !SvPOK(key)) {
         croak("add key argument must be a string");
     }
-    if (!val || !SvOK(val) || !SvPOK(val)) {
-        croak("add value argument must be a string");
+    if (!val || !SvOK(val)) {
+        croak("add value argument must be an actual value");
     }
     cache_add(aTHX_ cache, key, val);
 }
