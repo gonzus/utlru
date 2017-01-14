@@ -2,7 +2,7 @@
 #include "gmem.h"
 #include "lru.h"
 
-Cache* cache_build(int size)
+Cache* cache_build(pTHX_ int size)
 {
     Cache* cache;
     GMEM_NEW(cache, Cache*, sizeof(Cache));
@@ -12,7 +12,7 @@ Cache* cache_build(int size)
     return cache;
 }
 
-void cache_destroy(Cache* cache)
+void cache_destroy(pTHX_ Cache* cache)
 {
     /* fprintf(stderr, "LOG destroying cache for %d elements\n", cache->size); */
     GMEM_DEL(cache, Cache*, sizeof(Cache));

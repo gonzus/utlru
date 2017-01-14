@@ -10,7 +10,7 @@
 
 static int cache_dtor(pTHX_ SV *sv, MAGIC *mg) {
     Cache* cache = (Cache*) mg->mg_ptr;
-    cache_destroy(cache);
+    cache_destroy(aTHX_ cache);
     return 0;
 }
 
@@ -54,7 +54,7 @@ CODE:
     if (size <= 0) {
         size = CACHE_DEFAULT_SIZE;
     }
-    RETVAL = cache_build(size);
+    RETVAL = cache_build(aTHX_ size);
 }
 OUTPUT: RETVAL
 
