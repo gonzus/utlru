@@ -28,8 +28,8 @@ WriteMakefile(
         resources   => {
             repository => {
                 type => 'git',
-                url  => 'git@github.com:gonzus/utLRU',
-                web  => 'https://github.com/gonzus/utLRU',
+                url  => 'git@github.com:gonzus/utlru',
+                web  => 'https://github.com/gonzus/utlru',
             },
         },
     },
