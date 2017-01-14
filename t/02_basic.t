@@ -1,3 +1,7 @@
+use strict;
+use warnings;
+use utf8;
+
 use Test::More;
 
 use Cache::utLRU;
@@ -16,20 +20,20 @@ sub main {
         'Wagner' => 'Richard',
         'Verdi' => 'Giuseppe',
         'Liszt' => 'Franz',
-        'Chopin' => 'Frederic',
-        'Tchaikovsky' => 'Piotr Ilich',
+        'Chopin' => 'Frédéric',
+        'Tchaikovsky' => 'Pyotr Ilyich',
     );
 
     my $size = scalar keys %composers;
     my $cache = Cache::utLRU->new($size);
     is($cache->size, 0, "cache starts life empty");
 
-    foreach my $lastname (keys %composers) {
+    foreach my $lastname (sort keys %composers) {
         my $firstname = $composers{$lastname};
         $cache->add($lastname, $firstname);
     }
     is($cache->size, $size, "cache grows to $size elements");
-    foreach my $lastname (keys %composers) {
+    foreach my $lastname (sort keys %composers) {
         my $wanted = $composers{$lastname};
         my $got = $cache->find($lastname);
         is($got, $wanted, "got '$got' for '$lastname'");

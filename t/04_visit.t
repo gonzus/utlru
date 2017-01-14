@@ -1,3 +1,7 @@
+use strict;
+use warnings;
+use utf8;
+
 use Test::More;
 
 use Cache::utLRU;
@@ -16,13 +20,13 @@ sub main {
         'Wagner' => 'Richard',
         'Verdi' => 'Giuseppe',
         'Liszt' => 'Franz',
-        'Chopin' => 'Frederic',
-        'Tchaikovsky' => 'Piotr Ilich',
+        'Chopin' => 'Frédéric',
+        'Tchaikovsky' => 'Pyotr Ilyich',
     );
     my $length = scalar keys %composers;
 
     my $cache = Cache::utLRU->new($length);
-    foreach my $lastname (keys %composers) {
+    foreach my $lastname (sort keys %composers) {
         my $firstname = $composers{$lastname};
         $cache->add($lastname, $firstname);
     }
