@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include "gmem.h"
 #include "lru.h"
@@ -15,6 +16,10 @@ Cache* cache_build(pTHX_ int size)
 void cache_destroy(pTHX_ Cache* cache)
 {
     /* fprintf(stderr, "LOG destroying cache for %d elements\n", cache->size); */
+    cache_clear(aTHX_ cache);
+#if defined(GMEM_CHECK)
+    assert(HASH_COUNT(cache->data) == 0);
+#endif
     GMEM_DEL(cache, Cache*, sizeof(Cache));
 }
 
