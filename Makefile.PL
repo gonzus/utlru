@@ -13,6 +13,7 @@ WriteMakefile(
         'Test::More'            => 0,
         'Test::LeakTrace'       => 0,
         'Data::Dumper'          => 0,
+        'DDP'                   => 0,
     },
     AUTHOR         => [
         'Gonzalo Diethelm (gonzus@cpan.org)',
