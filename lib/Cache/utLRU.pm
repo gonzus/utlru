@@ -17,11 +17,11 @@ __END__
 
 =head1 SYNOPSIS
 
-Cache::utLRU - LRU cache using the uthash library
+Cache::utLRU - A Perl LRU cache using the uthash library
 
 =head1 DESCRIPTION
 
-Quick & dirty implementation of an LRU cache using the uthash library.
+Quick & dirty implementation of a Perl LRU cache using the uthash library.
 
 =head1 AUTHORS
 

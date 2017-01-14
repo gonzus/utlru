@@ -1,6 +1,6 @@
 # NAME
 
-Cache::utLRU - LRU cache using the uthash library
+Cache::utLRU - A Perl LRU cache using the uthash library
 
 # VERSION
 
@@ -8,7 +8,7 @@ version 0.001
 
 # SYNOPSIS
 
-Quick & dirty implementation of an LRU cache using the uthash library.
+Quick & dirty implementation of a Perl LRU cache using the uthash library.
 
 # THANKS
 
