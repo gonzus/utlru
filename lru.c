@@ -28,6 +28,11 @@ int cache_size(pTHX_ Cache* cache)
     return HASH_COUNT(cache->data);
 }
 
+int cache_capacity(pTHX_ Cache* cache)
+{
+    return cache->size;
+}
+
 void cache_clear(pTHX_ Cache* cache)
 {
     /* fprintf(stderr, "LOG clearing cache for %d elements\n", cache->size); */

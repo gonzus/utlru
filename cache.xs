@@ -66,6 +66,14 @@ CODE:
 }
 OUTPUT: RETVAL
 
+int
+capacity(Cache* cache)
+CODE:
+{
+    RETVAL = cache_capacity(aTHX_ cache);
+}
+OUTPUT: RETVAL
+
 void
 clear(Cache* cache)
 CODE:

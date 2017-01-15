@@ -20,6 +20,7 @@ Cache* cache_build(pTHX_ int size);
 void cache_destroy(pTHX_ Cache* cache);
 
 int cache_size(pTHX_ Cache* cache);
+int cache_capacity(pTHX_ Cache* cache);
 void cache_clear(pTHX_ Cache* cache);
 SV* cache_find(pTHX_ Cache* cache, SV* key);
 void cache_add(pTHX_ Cache* cache, SV* key, SV* val);

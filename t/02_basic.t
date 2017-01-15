@@ -25,8 +25,11 @@ sub main {
     );
 
     my $size = scalar keys %composers;
-    my $cache = Cache::utLRU->new($size);
+    my $cache = Cache::utLRU->new();
+    my $default_capacity = 1000;
+    my $capacity = $cache->capacity;
     is($cache->size, 0, "cache starts life empty");
+    is($cache->capacity, $default_capacity, "cache capacity is the default, $default_capacity");
 
     foreach my $lastname (sort keys %composers) {
         my $firstname = $composers{$lastname};
