@@ -91,7 +91,9 @@ CODE:
     if (!val || !SvOK(val)) {
         croak("add value argument must be an actual value");
     }
-    cache_add(aTHX_ cache, key, val);
+    if (!cache_add(aTHX_ cache, key, val)) {
+        croak("could not add element to cache");
+    }
 }
 
 SV*

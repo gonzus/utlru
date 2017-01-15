@@ -61,7 +61,7 @@ SV* cache_find(pTHX_ Cache* cache, SV* key)
     return entry->val;
 }
 
-void cache_add(pTHX_ Cache* cache, SV* key, SV* val)
+int cache_add(pTHX_ Cache* cache, SV* key, SV* val)
 {
     /* do not use gmem for these elements,
      * they will be deleted internally by ut */
@@ -70,6 +70,10 @@ void cache_add(pTHX_ Cache* cache, SV* key, SV* val)
     kptr = SvPV(key, klen);
 
     CacheEntry* entry = (CacheEntry*) malloc(sizeof(CacheEntry));
+    if (!entry) {
+        return 0;
+    }
+
     entry->key = key;
     entry->val = val;
 
@@ -102,6 +106,7 @@ void cache_add(pTHX_ Cache* cache, SV* key, SV* val)
             break;
         }
     }
+    return 1;
 }
 
 void cache_iterate(pTHX_ Cache* cache, CacheVisitor visitor, void* arg)

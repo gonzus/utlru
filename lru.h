@@ -23,7 +23,7 @@ int cache_size(pTHX_ Cache* cache);
 int cache_capacity(pTHX_ Cache* cache);
 void cache_clear(pTHX_ Cache* cache);
 SV* cache_find(pTHX_ Cache* cache, SV* key);
-void cache_add(pTHX_ Cache* cache, SV* key, SV* val);
+int cache_add(pTHX_ Cache* cache, SV* key, SV* val);
 
 typedef void (CacheVisitor)(Cache* cache, CacheEntry* entry, void* arg);
 void cache_iterate(pTHX_ Cache* cache, CacheVisitor visitor, void* arg);
