@@ -7,9 +7,10 @@ Cache* cache_build(pTHX_ int size)
 {
     Cache* cache;
     GMEM_NEW(cache, Cache*, sizeof(Cache));
-    cache->size = size;
-    cache->data = 0;
-    /* fprintf(stderr, "LOG building cache for %d elements\n", cache->size); */
+    if (cache) {
+        cache->size = size;
+        cache->data = 0;
+    }
     return cache;
 }
 

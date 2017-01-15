@@ -55,6 +55,9 @@ CODE:
         size = CACHE_DEFAULT_SIZE;
     }
     RETVAL = cache_build(aTHX_ size);
+    if (!RETVAL) {
+        croak("could not create cache");
+    }
 }
 OUTPUT: RETVAL
 
