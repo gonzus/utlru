@@ -12,11 +12,11 @@ typedef struct CacheEntry {
 } CacheEntry;
 
 typedef struct Cache {
-    int size;
+    int capacity;
     CacheEntry* data;
 } Cache;
 
-Cache* cache_build(pTHX_ int size);
+Cache* cache_build(pTHX_ int capacity);
 void cache_destroy(pTHX_ Cache* cache);
 
 int cache_size(pTHX_ Cache* cache);

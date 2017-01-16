@@ -3,12 +3,12 @@
 #include "gmem.h"
 #include "lru.h"
 
-Cache* cache_build(pTHX_ int size)
+Cache* cache_build(pTHX_ int capacity)
 {
     Cache* cache;
     GMEM_NEW(cache, Cache*, sizeof(Cache));
     if (cache) {
-        cache->size = size;
+        cache->capacity = capacity;
         cache->data = 0;
     }
     return cache;
@@ -16,7 +16,7 @@ Cache* cache_build(pTHX_ int size)
 
 void cache_destroy(pTHX_ Cache* cache)
 {
-    /* fprintf(stderr, "LOG destroying cache for %d elements\n", cache->size); */
+    /* fprintf(stderr, "LOG destroying cache for %d elements\n", cache->capacity); */
     cache_clear(aTHX_ cache);
 #if defined(GMEM_CHECK)
     assert(HASH_COUNT(cache->data) == 0);
@@ -31,12 +31,12 @@ int cache_size(pTHX_ Cache* cache)
 
 int cache_capacity(pTHX_ Cache* cache)
 {
-    return cache->size;
+    return cache->capacity;
 }
 
 void cache_clear(pTHX_ Cache* cache)
 {
-    /* fprintf(stderr, "LOG clearing cache for %d elements\n", cache->size); */
+    /* fprintf(stderr, "LOG clearing cache for %d elements\n", cache->capacity); */
     HASH_CLEAR(hh, cache->data);
 }
 
@@ -89,7 +89,7 @@ int cache_add(pTHX_ Cache* cache, SV* key, SV* val)
      * prune the cache to not exceed its size
      */
     int size = HASH_COUNT(cache->data);
-    for (int j = cache->size; j < size; ++j) {
+    for (int j = cache->capacity; j < size; ++j) {
         CacheEntry* tmp;
         HASH_ITER(hh, cache->data, entry, tmp) {
             /*
