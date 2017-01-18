@@ -19,19 +19,20 @@ static void cache_visit(Cache* cache, CacheEntry* entry, void* arg)
     /* TODO: find out if we really need to call all these magic macros */
     dTHX;
     dSP;
-    if (!arg) {
+    if (!cache || !entry || !arg) {
         return;
     }
     ENTER;
     SAVETMPS;
 
+    EXTEND(SP, 2);
     PUSHMARK(SP);
-    PUSHs(entry->key);
+    PUSHs(newSVsv(entry->key));
     PUSHs(entry->val);
     PUTBACK;
 
     SV* cb = (SV*) arg;
-    call_sv(cb, G_SCALAR | G_EVAL);
+    call_sv(cb, G_SCALAR | G_EVAL | G_DISCARD);
 
     SPAGAIN;
 
@@ -101,14 +102,15 @@ CODE:
 
 SV*
 find(Cache* cache, SV* key)
-CODE:
+PPCODE:
 {
+    /* We use PPCODE because XS mortalizes the return value */
     if (!key || !SvOK(key) || !SvPOK(key)) {
         croak("find key argument must be a string");
     }
-    RETVAL = cache_find(aTHX_ cache, key);
+    ST(0) = cache_find(aTHX_ cache, key);
+    XSRETURN(1);
 }
-OUTPUT: RETVAL
 
 void
 visit(Cache* cache, SV* cb)

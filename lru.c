@@ -32,9 +32,21 @@ int cache_capacity(pTHX_ Cache* cache)
     return cache->capacity;
 }
 
+static void clear_entry(pTHX_ Cache* cache, CacheEntry* entry)
+{
+    SvREFCNT_dec(entry->key);
+    SvREFCNT_dec(entry->val);
+    HASH_DELETE(hh, cache->data, entry);
+    free(entry);
+}
+
 void cache_clear(pTHX_ Cache* cache)
 {
-    HASH_CLEAR(hh, cache->data);
+    CacheEntry* entry;
+    CacheEntry* tmp;
+    HASH_ITER(hh, cache->data, entry, tmp) {
+        clear_entry(aTHX_ cache, entry);
+    }
 }
 
 SV* cache_find(pTHX_ Cache* cache, SV* key)
@@ -42,6 +54,7 @@ SV* cache_find(pTHX_ Cache* cache, SV* key)
     STRLEN klen = 0;
     char* kptr = NULL;
     kptr = SvPV(key, klen);
+    /* fprintf(stderr, "FIND KEY %lu [%s]\n", klen, kptr); */
 
     CacheEntry* entry;
     HASH_FIND(hh, cache->data, kptr, klen, entry);
@@ -54,28 +67,41 @@ SV* cache_find(pTHX_ Cache* cache, SV* key)
      */
     HASH_DELETE(hh, cache->data, entry);
     HASH_ADD_KEYPTR(hh, cache->data, kptr, klen, entry);
+
     return entry->val;
 }
 
 int cache_add(pTHX_ Cache* cache, SV* key, SV* val)
 {
-    /* do not use gmem for these elements,
-     * they will be deleted internally by ut */
-    STRLEN klen = 0;
-    char* kptr = NULL;
-    kptr = SvPV(key, klen);
-
     CacheEntry* entry = (CacheEntry*) malloc(sizeof(CacheEntry));
     if (!entry) {
         return 0;
     }
 
+#if 1
+    /*
+     * This version simply increments the refcnt for key and val.
+     * It is MUCH faster, and so far I have not seen problems.
+     */
     entry->key = key;
     entry->val = val;
+    SvREFCNT_inc(entry->key);
+    SvREFCNT_inc(entry->val);
+#else
+    /*
+     * This version creates SV* copies of key and val.
+     * It is MUCH slower, but it might be the (only) correct way to do it.
+     */
+    entry->key = newSVsv(key);
+    entry->val = newSVsv(val);
+#endif
 
-    /* increment perl refcounts */
-    SvREFCNT_inc(key);
-    SvREFCNT_inc(val);
+    /* do not use gmem for these elements,
+     * they will be deleted internally by ut */
+    STRLEN klen = 0;
+    char* kptr = NULL;
+    kptr = SvPV(entry->key, klen);
+    /* fprintf(stderr, "ADD KEY %lu [%s]\n", klen, kptr); */
 
     HASH_ADD_KEYPTR(hh, cache->data, kptr, klen, entry);
 
@@ -91,15 +117,11 @@ int cache_add(pTHX_ Cache* cache, SV* key, SV* val)
              * order so this deletes the oldest item
              */
 
-            /* decrement perl refcounts */
-            SvREFCNT_dec(entry->key);
-            SvREFCNT_dec(entry->val);
-
-            HASH_DELETE(hh, cache->data, entry);
-            free(entry);
+            clear_entry(aTHX_ cache, entry);
             break;
         }
     }
+
     return 1;
 }
 
