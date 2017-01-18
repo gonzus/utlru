@@ -14,7 +14,7 @@ while ($k = <DATA>) {
     $mem{$k} = ${k};
 }
 my $hits = 0;
-$cache->visit(sub { $hits += $mem{$_[0]} eq $_[1] ? 1 : 0 });
+$cache->visit(sub { $hits += (defined $_[0] && defined $_[1] && exists $mem{$_[0]} && $mem{$_[0]} eq $_[1]) ? 1 : 0 });
 is $hits, scalar keys %mem, "all values found";
 
 done_testing;
