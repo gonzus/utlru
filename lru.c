@@ -90,7 +90,7 @@ int cache_add(pTHX_ Cache* cache, SV* key, SV* val)
     entry->val = val;
     SvREFCNT_inc(entry->key);
     SvREFCNT_inc(entry->val);
-#elif 0
+#elif 1
     /*
      * This version creates SV* copies of key and val.
      * It is MUCH slower, but it might be the (only) correct way to do it.
