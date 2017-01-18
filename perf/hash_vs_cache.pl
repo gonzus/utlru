@@ -19,7 +19,7 @@ sub main {
 sub do_hash {
     my %hash;
     my $t0 = time();
-    $hash{"key$_"} = "val_$_" for 1..$elems;
+    $hash{"key_$_"} = "val_$_" for 1..$elems;
     my $t1 = time();
     return int(1000 * ($t1 - $t0));
 }
@@ -27,7 +27,7 @@ sub do_hash {
 sub do_cache {
     my $cache = Cache::utLRU->new($size);
     my $t0 = time();
-    $cache->add("key$_", "val_$_") for 1..$elems;
+    $cache->add("key_$_", "val_$_") for 1..$elems;
     my $t1 = time();
     return int(1000 * ($t1 - $t0));
 }
