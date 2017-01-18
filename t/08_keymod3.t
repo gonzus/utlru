@@ -12,7 +12,7 @@ my $cache = Cache::utLRU->new();
 my $k;
 while ($k = <DATA>) {
     chomp $k;
-    Dump($k);
+    # Dump($k);
     $cache->add($k, 1);
 }
 
