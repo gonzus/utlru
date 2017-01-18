@@ -78,22 +78,33 @@ int cache_add(pTHX_ Cache* cache, SV* key, SV* val)
         return 0;
     }
 
-#if 1
+#if 0
     /*
      * This version simply increments the refcnt for key and val.
-     * It is MUCH faster, and so far I have not seen problems.
+     * It is MUCH faster, and it would be awesome if we could use it.
+     * BUT
+     * Depending on how the key value was declared / used in Perl,
+     * we have no guarantees that we will NOT overwrite data in the cache.
      */
     entry->key = key;
     entry->val = val;
     SvREFCNT_inc(entry->key);
     SvREFCNT_inc(entry->val);
-#else
+#elif 0
     /*
      * This version creates SV* copies of key and val.
      * It is MUCH slower, but it might be the (only) correct way to do it.
      */
     entry->key = newSVsv(key);
     entry->val = newSVsv(val);
+#else
+    /*
+     * This version creates SV* copies of key only.
+     * It is slower, and maybe it works...
+     */
+    entry->key = newSVsv(key);
+    entry->val = val;
+    SvREFCNT_inc(entry->val);
 #endif
 
     /* do not use gmem for these elements,
