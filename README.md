@@ -12,6 +12,7 @@ Quick & dirty implementation of a Perl LRU cache using the uthash library.
 
 # THANKS
 
+- Vickenty Fesunov, `kent` at `setattr.net`
 - The `uthash` team at [http://troydhanson.github.com/uthash/](http://troydhanson.github.com/uthash/)
 
 # AUTHORS
