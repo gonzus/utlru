@@ -100,7 +100,7 @@ CODE:
     }
 }
 
-SV*
+void
 find(Cache* cache, SV* key)
 PPCODE:
 {
