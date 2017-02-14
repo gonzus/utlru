@@ -33,4 +33,10 @@ Quick & dirty implementation of a Perl LRU cache using the uthash library.
 
 =head1 THANKS
 
-The C<uthash> team at L<http://troydhanson.github.com/uthash>.
+=over 4
+
+=item * Vickenty Fesunov C<< kent AT setattr DOT net >>
+
+=item * The C<uthash> team at L<http://troydhanson.github.com/uthash>
+
+=back
