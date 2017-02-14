@@ -120,7 +120,8 @@ int cache_add(pTHX_ Cache* cache, SV* key, SV* val)
      * prune the cache to not exceed its size
      */
     int size = HASH_COUNT(cache->data);
-    for (int j = cache->capacity; j < size; ++j) {
+    int j;
+    for (j = cache->capacity; j < size; ++j) {
         CacheEntry* tmp;
         HASH_ITER(hh, cache->data, entry, tmp) {
             /*

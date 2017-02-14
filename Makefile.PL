@@ -44,7 +44,7 @@ sub cflags {
     my @cflags = split /\n/, $cflags;
 
     $self->{CCFLAGS} .= ' -Wall';                # Flag all warnings
-    $self->{CCFLAGS} .= ' -std=c90';             # Compile according to C89 standard
+    $self->{CCFLAGS} .= ' -std=c89';             # Compile according to C89 standard
 
     # Need this define for localtime_r(), except on FreeBSD
     if ($^O ne 'freebsd') {
