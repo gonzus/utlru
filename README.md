@@ -4,7 +4,7 @@ Cache::utLRU - A Perl LRU cache using the uthash library
 
 # VERSION
 
-version 0.001
+version 0.002
 
 # SYNOPSIS
 
