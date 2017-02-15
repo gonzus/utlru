@@ -19,3 +19,8 @@ t/01_use.t
 t/02_basic.t
 t/03_multi.t
 t/04_visit.t
+t/05_references.t
+t/06_keymod1.t
+t/07_keymod2.t
+t/08_keymod3.t
+t/09_keymod4.t
