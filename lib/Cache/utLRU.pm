@@ -44,3 +44,11 @@ Quick & dirty implementation of a Perl LRU cache using the uthash library.
 =item * The C<uthash> team at L<http://troydhanson.github.com/uthash>
 
 =back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2017 by Gonzalo Diethelm.
+
+This is free software, licensed under:
+
+    The MIT (X11) License
