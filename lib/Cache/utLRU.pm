@@ -15,7 +15,7 @@ __END__
 
 =encoding utf8
 
-=head1 SYNOPSIS
+=head1 NAME
 
 Cache::utLRU - A Perl LRU cache using the uthash library
 
